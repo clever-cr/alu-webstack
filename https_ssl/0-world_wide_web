@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Define the function to get the record type and destination for a subdomain
+
+get_record_type_and_destination() {
+    local domain=$1
+    local subdomain=$2
+    local record_type=$(dig +short $subdomain.$domain | awk 'NR==1{print $2}')
+    local destination=$(dig +short $subdomain.$domain)
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+}
+
+# Define the main function to audit the domain and subdomains
+audit_domain() {
+    local domain=$1
+    local subdomain=$2
+    if [ -z "$subdomain" ]; then
+        # Audit all subdomains in order
+        get_record_type_and_destination $domain "www"
+        get_record_type_and_destination $domain "lb-01"
+        get_record_type_and_destination $domain "web-01"
+        get_record_type_and_destination $domain "web-02"
+    else
+        # Audit only the specified subdomain
+        get_record_type_and_destination $domain $subdomain
+    fi
+}
+
+# Parse the command-line arguments
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+fi
+domain=$1
+subdomain=$2
+
+# Call the main function
+audit_domain $domain $subdomain
