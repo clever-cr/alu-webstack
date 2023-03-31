@@ -6,7 +6,7 @@ get_record_type_and_destination() {
     local subdomain=$2
     local record_type=$(dig +short $subdomain.$domain | awk 'NR==1{print $2}')
     local destination=$(dig +short $subdomain.$domain)
-    echo "The subdomain $subdomain is a A $record_type record and points to $destination"
+    echo "The subdomain $subdomain is a A$record_type record and points to $destination"
 }
 
 # Define the main function to audit the domain and subdomains
