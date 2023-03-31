@@ -34,6 +34,7 @@ defaults
 backend web_servers
         mode http
         balance roundrobin
+        http-request redirect scheme https code 301 unless { ssl_fc }
         server 5392-web-01 54.152.198.153:80 check
         server 5392-web-02 174.129.47.28:80 check
 frontend www.uclever.tech
